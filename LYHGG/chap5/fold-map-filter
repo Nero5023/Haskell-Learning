@@ -1,0 +1,17 @@
+takeWhile (< 1000) (filter odd (map (^2) [1..]))
+takeWhile (< 1000) ([x^2 | x<-[1..], odd (x^2)])
+takeWhile (< 1000) ([x | x<-[m^2|m<-[1..]], odd x])
+foldl (+) 0 [1,2,3,4,5]
+foldr (\x acc -> x:acc) [] [12,3,4]
+foldr (:) [] [12,3,4]
+foldl (\acc x -> acc ++ [x]) [] [12,3,4]
+
+and' xs = foldr (&&) True xs
+
+(takeWhile (<1000) (scanl1 (+) (map sqrt [1..])))
+
+sum (filter (> 10) (map (*2) [2..10]))
+sum $ filter (>10) $ map (* 2) [2..10]
+
+(.) :: (b -> c) -> (a -> b) -> a -> c 
+f . g = \x -> f (g x)
