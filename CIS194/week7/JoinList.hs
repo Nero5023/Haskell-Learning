@@ -36,11 +36,23 @@ indexJ _ _ = Nothing
 
 dropJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
 dropJ 0 jl = jl
-dropJ n jl@(Append m l r)
+dropJ n (Append m l r)
     | n >= totalSize = Empty
     | n >= lSize     = dropJ (n - lSize) r
-    | n >= 0         = dropJ n l
+    | n >= 0         = dropJ n l +++ r
         where totalSize = getSize $ size m
               lSize     = getSize $ size $ tag l
 dropJ n _  
     | n>0 = Empty
+
+
+takeJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+takeJ 0 _ = Empty
+takeJ n jl@(Append m l r)
+    | n >= totalSize = jl
+    | n >= lSize     = l +++ takeJ (n - lSize) r
+    | n >= 0         = takeJ n l
+        where totalSize = getSize . size $ m
+              lSize     = getSize . size . tag $ l
+takeJ n jl 
+    | n > 0 = jl
