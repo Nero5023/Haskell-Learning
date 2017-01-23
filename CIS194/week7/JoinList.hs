@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module JoinList where
 
 import Data.Monoid
@@ -5,6 +7,7 @@ import Data.Monoid
 import Sized
 import Buffer
 import Editor
+import Scrabble
 
 data JoinList m a = Empty
                    | Single m a
@@ -56,3 +59,24 @@ takeJ n jl@(Append m l r)
               lSize     = getSize . size . tag $ l
 takeJ n jl 
     | n > 0 = jl
+
+
+jlToList :: JoinList m a -> [a]
+jlToList Empty          = []
+jlToList (Single _ a)   = [a]
+jlToList (Append _ l r) = jlToList l ++ jlToList r
+
+-- exercise 4
+scoreLine :: String -> JoinList Score String
+scoreLine str = Single (scoreString str) str
+
+instance Buffer (JoinList (Score, Size) String) where
+    toString             =  unlines . jlToList
+    fromString           = foldl (\acc str -> acc +++ scoreSize str) Empty . lines
+        where scoreSize str = Single (scoreString str, 1) str
+    line                 = indexJ
+    replaceLine n str jl = takeJ n jl +++ fromString str +++ dropJ (n+1) jl
+    numLines             =  getSize . size . tag
+    value                = getScore . fst . tag
+
+main = runEditor editor (fromString "test" :: (JoinList (Score, Size) String))

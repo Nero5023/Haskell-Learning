@@ -2,7 +2,6 @@ module Scrabble where
 
 import Data.Monoid
 import Data.Char
-import JoinList
 
 newtype Score = Score Int
     deriving (Eq, Read, Show, Ord)
@@ -26,5 +25,6 @@ score ch
 scoreString :: String -> Score
 scoreString = foldl (\acc x -> acc <> score x) $ Score 0 
 
-scoreLine :: String -> JoinList Score String
-scoreLine str = Single (scoreString str) str
+
+getScore :: Score -> Int
+getScore (Score a) = a
