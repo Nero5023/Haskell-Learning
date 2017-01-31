@@ -1,6 +1,7 @@
 module Party where
 import Employee
 import Data.Tree
+import Data.List
 
 -- Exercise 1
 -- 1
@@ -27,12 +28,30 @@ treeFold f init (Node label trees)
 
 -- Exercise 3
 nextLevel :: Employee -> [(GuestList, GuestList)] -> (GuestList, GuestList)
-nextLevel boss glPairs = (maximumGL withBossGls, maximumGL withoutBossGLs)
-    where withBossGls    = map fst glPairs
-          withoutBossGLs = map snd glPairs
+nextLevel boss glPairs = (glCons boss $ maximumGL withoutSubBossGLs, maximumGL withSubBossGls)
+    where withSubBossGls    = map fst glPairs
+          withoutSubBossGLs = map snd glPairs
 
 
 maximumGL :: [GuestList] -> GuestList
 maximumGL []  = mempty
 maximumGL gls = maximum gls
 
+-- Exercise 4
+maxFun :: Tree Employee -> GuestList
+maxFun tree = uncurry max maxPair
+    where maxPair = treeFold (flip nextLevel) (mempty, mempty) tree
+
+main = readFile "company.txt" >>= (\content -> putStrLn $ formatMaxGL $ maxFun $ read content)
+
+
+formatMaxGL :: GuestList -> String
+formatMaxGL (GL list fun) = "Total fun: " ++ show fun ++ "\n" ++ unlines emps
+    where emps = sort $ map empName list
+
+
+-- main = do
+--     content <- readFile "company.txt"
+--     let datas = read content :: Tree Employee
+--     -- print datas
+--     print "1"
