@@ -24,3 +24,15 @@ moreFun gl0@(GL _ fun0) gl1@(GL _ fun1)
 treeFold :: ([b] -> a -> b) -> b -> Tree a -> b
 treeFold f init (Node label trees) 
     = f (map (treeFold f init) trees) label
+
+-- Exercise 3
+nextLevel :: Employee -> [(GuestList, GuestList)] -> (GuestList, GuestList)
+nextLevel boss glPairs = (maximumGL withBossGls, maximumGL withoutBossGLs)
+    where withBossGls    = map fst glPairs
+          withoutBossGLs = map snd glPairs
+
+
+maximumGL :: [GuestList] -> GuestList
+maximumGL []  = mempty
+maximumGL gls = maximum gls
+
