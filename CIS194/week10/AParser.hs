@@ -89,4 +89,7 @@ instance Alternative Parser where
     empty = Parser (const Nothing)
     p1 <|> p2 = Parser func
         where func str = runParser p1 str <|> runParser p2 str
-        
+
+-- Exercise 5
+intOrUppercase :: Parser ()
+intOrUppercase = const () <$> posInt <|> const () <$> satisfy isUpper
