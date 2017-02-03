@@ -57,3 +57,16 @@ posInt = Parser f
 ------------------------------------------------------------
 -- Your code goes below here
 ------------------------------------------------------------
+
+first :: (a -> b) -> (a,c) -> (b,c)
+first f (a, c) = (f a, c)
+
+instance Functor Parser where
+  fmap f (Parser func) = Parser (fmap (first f) . func)
+
+instance Applicative Parser where
+  pure a = Parser (\str -> Just (a, str))
+  Parser f1 <*> Parser f2 = Parser func
+    where func str =  case f1 str of 
+                        Nothing -> Nothing
+                        Just (trans, strRemain) -> fmap (first trans) $ f2 strRemain
