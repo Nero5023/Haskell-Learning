@@ -82,4 +82,11 @@ abParser_ = fmap (\(_, _) -> ()) abParser
 
 
 intPair :: Parser [Integer]
-intPair = (\num1 _ num2 -> num1:num2:[]) <$> posInt <*> char ' ' <*> posInt
+intPair = (\num1 _ num2 -> [num1, num2]) <$> posInt <*> char ' ' <*> posInt
+
+-- Exercise 4
+instance Alternative Parser where
+    empty = Parser (const Nothing)
+    p1 <|> p2 = Parser func
+        where func str = runParser p1 str <|> runParser p2 str
+        
