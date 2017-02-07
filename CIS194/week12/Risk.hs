@@ -61,7 +61,29 @@ elemNum :: (Eq a) => a -> [a] -> Int
 elemNum element
     = foldl (\ acc x -> if x == element then acc + 1 else acc) 0 
 
-
+-- get the battlefied and the lost the arms for attackers and defends 
+-- compute Battlefied after the lost
 lostArmy :: Battlefield -> (Army, Army) -> Battlefield
 lostArmy (Battlefield att def) (lostAtt, lostDef) 
     = Battlefield (att - lostAtt) (def - lostDef)
+
+-- Exercise 3
+--  simulates an entire invasion attempt
+invade :: Battlefield -> Rand StdGen Battlefield
+invade bf 
+    | attackers bf < 2 || defenders bf < 1 = return bf
+    | otherwise = battle bf >>= invade
+
+-- Exercise 4
+successProb :: Battlefield -> Rand StdGen Double
+successProb bf = replicateM 1000 (invade bf) >>= probability
+
+-- get the probability of the attckers wins
+probability :: [Battlefield] -> Rand StdGen Double
+probability bfs = return $ fromIntegral (length attWins) / fromIntegral (length bfs)
+    where attWins = filter ((==0) . defenders) bfs
+
+
+main = do
+    values <- evalRandIO (successProb $ Battlefield 5 5)    
+    putStrLn $ show (values*100) ++ "%"
