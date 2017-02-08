@@ -1,4 +1,5 @@
 import Control.Monad.Writer
+import DiffList
 
 gcd' :: Int -> Int -> Writer [String] Int
 gcd' a b
@@ -8,18 +9,6 @@ gcd' a b
     | otherwise = do
         tell [show a ++ " mod " ++ show b ++ " = " ++ show (a `mod` b)]
         gcd' b (a `mod` b)
-
-newtype DiffList a = DiffList { getDiffList :: [a]->[a] } 
-
-toDiffList :: [a] -> DiffList a
-toDiffList xs = DiffList (xs++)
-
-fromDiffList :: DiffList a -> [a]
-fromDiffList (DiffList f) = f []
-
-instance Monoid (DiffList a) where
-    mempty = DiffList(\xs -> [] ++ xs)
-    (DiffList f) `mappend` (DiffList g) = DiffList (\xs -> f (g xs))
 
     
 
