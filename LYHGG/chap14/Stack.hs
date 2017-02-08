@@ -11,6 +11,8 @@ push x = state $ \(xs) -> ((), (x:xs))
 
 stackManip :: State Stack Int 
 stackManip = do
-    push 3
     a <- pop
+    push a
+    push a
+    push a
     pop
