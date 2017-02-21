@@ -18,6 +18,12 @@ parseMove :: String -> Maybe Move
 parseMove str = case reads str of [(m, "")] -> Just m
                                   _ -> Nothing
 
+parseMove' :: String -> Maybe Move
+parseMove' str = case reads str of
+  [(m, rest)] | ok rest -> Just m
+  _                     -> Nothing
+  where ok = all (`elem` " \r\n")
+
 countLowerCase :: String -> Int
 countLowerCase str = length (filter isLower str)
 
