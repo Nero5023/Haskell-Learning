@@ -18,6 +18,9 @@ parseMove :: String -> Maybe Move
 parseMove str = case reads str of [(m, "")] -> Just m
                                   _ -> Nothing
 
+-- This is wrong
+show1 x = show x
+
 parseMove' :: String -> Maybe Move
 parseMove' str = case reads str of
   [(m, rest)] | ok rest -> Just m
