@@ -55,3 +55,5 @@ withClient listenPort fn = do
     a <- fn h
     hClose h
     return a
+
+-- withClient (PortNumber 1617) (computerVsUser Rock)
