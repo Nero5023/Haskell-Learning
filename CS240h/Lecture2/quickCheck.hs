@@ -53,3 +53,27 @@ prop_encodeOne5 = do
 
 class Functor f  where
     fmap :: (a -> b) -> f a -> f b
+
+
+data Point a = Point a a
+
+instance (Arbitrary a) => Arbitrary (Point a) where
+    arbitrary = do
+      x <- arbitrary
+      y <- arbitrary
+      return (Point x y)
+After:
+
+import Control.Monad (liftM2)
+
+instance (Arbitrary a) => Arbitrary (Point a) where
+    arbitrary = liftM2 Point arbitrary arbitrary
+
+
+data Point a = Point a a
+               deriving (Eq, Show)
+
+instance (Arbitrary a) => Arbitrary (Point a) where
+    arbitrary = liftM2 Point arbitrary arbitrary
+    -- TODO: provide a body for shrink
+    shrink = undefined
