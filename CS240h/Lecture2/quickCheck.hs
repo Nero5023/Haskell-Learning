@@ -30,7 +30,25 @@ prop_encodeOne3 (Big c) = length (encodeChar c) == 1
 shrinkChar :: Char -> [Char]
 shrinkChar c = map chr $ shrink $ ord c
 
+data Tree a = Node (Tree a) (Tree a)
+            | Leaf a
+              deriving (Show)
 
+
+instance (Arbitrary a) => Arbitrary (Tree a) where
+    arbitrary = oneof [
+                  liftM  Leaf arbitrary
+                , liftM2 Node arbitrary arbitrary
+                ]
+
+
+tree :: (Arbitrary a) => Int -> Gen (Tree a)
+tree 0 = liftM Leaf arbitrary
+tree n = oneof [
+           liftM  Leaf arbitrary
+         , liftM2 Node subtree subtree
+         ]
+  where subtree = tree (n `div` 2)
 
 
 
