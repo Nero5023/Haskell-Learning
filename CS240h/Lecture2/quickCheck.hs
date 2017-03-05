@@ -37,9 +37,9 @@ prop_encodeOne2 = do
 prop_encodeOne4 (Big c) =
   (c < '\x10000') ==> length (encodeChar c) == 1
 
-prop_encodeOne5 = do
-  Big c <- arbitrary `suchThat` (< Big '\x10000')
-  return $ length (encodeChar c) == 1
+-- prop_encodeOne5 = do
+--   Big c <- arbitrary `suchThat` (< Big '\x10000')
+--   return $ length (encodeChar c) == 1
 
 
 -- data Tree a = Node (Tree a) (Tree a)
