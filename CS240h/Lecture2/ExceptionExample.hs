@@ -34,9 +34,16 @@ readFileIfExists f =
     catchJust p (readFile f) (\e -> return $open show e)
         where p e = if isDoesNotExistError e then Just e else Nothing
 
+-- modifyMVar :: MVar a -> (a -> IO (a,b)) -> IO b
+-- modifyMVar m action = do
+--   v0 <- takeMVar m -- -------------- oops, race condition
+--   (v, r) <- action v0 `onException` putMVar m v0
+--   putMVar m v
+--   return r
+
 modifyMVar :: MVar a -> (a -> IO (a,b)) -> IO b
-modifyMVar m action = do
-  v0 <- takeMVar m -- -------------- oops, race condition
-  (v, r) <- action v0 `onException` putMVar m v0
+modifyMVar m action = mask $ \unmask -> do
+  v0 <- takeMVar m -- automatically unmasked while waiting
+  (v, r) <- unmask (action v0) `onException` putMVar m v0
   putMVar m v
   return r
