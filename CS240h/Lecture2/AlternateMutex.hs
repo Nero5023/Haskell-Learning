@@ -6,7 +6,7 @@ import Control.Exception
 import Control.Monad
 
 type Mutex = MVar ThreadId
-67qmmutex_create :: IO Mutex
+mutex_create :: IO Mutex
 mutex_create = newEmptyMVar
 
 mutex_lock mv = myThreadId >>= putMVar mv
