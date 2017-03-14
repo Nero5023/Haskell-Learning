@@ -1,3 +1,5 @@
+import Control.Concurrent
+
 data Cond = Cond (MVar [MVar ()])
 
 cond_create :: IO Cond
